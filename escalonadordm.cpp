@@ -3,15 +3,13 @@
 #include <vector>
 #include <random>
 #include <stdlib.h>
+#include <iomanip>
 
 using namespace std;
 
 int requisicoes[10];
 set<int> posicoes;
 int lastAcess =0, deslocamentos=0, posInicial, valueForDirection=0, backupforInitial;
-bool whatDirection = false;   // FALSE DIRECIONA PARA BAIXO, TRUE PARA CIMA
-bool directionForC = false;    // FALSE DIRECIONA PARA BAIXO, TRUE PARA CIMA
-
 
 void fillRebonatto(){
     requisicoes[0]=30;
@@ -32,16 +30,11 @@ void geraRandom(){
     for(int i=0; i<11; i++){
         random_device rd;
         mt19937 gen(rd());
-        uniform_int_distribution<int> distribution(1, 100);
+        uniform_int_distribution<int> distribution(1, 99);
         if(i<10) requisicoes[i] = distribution(gen);
         else posInicial = distribution(gen);
     }
     backupforInitial=posInicial;
-}
-void changeDirection(){
-    if(posInicial<=50)whatDirection= true;
-    if(posInicial>=50)directionForC = true;
-    valueForDirection=posInicial;
 }
 void printOriginal(){
     cout << "\n" << "Posição inicial da cabeça de leitura e gravação " << posInicial << "\n";
@@ -55,7 +48,7 @@ void printOriginal(){
 void print(){
     int meuTamanho = 10-(int)posicoes.size();
     int counter =0;
-    cout << "Acessou " << lastAcess << "[";
+    cout << "Acessou " << setw(2) << setfill('0') << lastAcess << "[";
     for(int i=0; i<10;i++){
         if(posicoes.count(i)==0){
             counter++;
@@ -71,38 +64,15 @@ void print(){
 }
 
 void zeroAll(){
-    posInicial=backupforInitial,lastAcess=posInicial,deslocamentos=0;posicoes.clear();
+    posInicial=backupforInitial,lastAcess=posInicial,deslocamentos=0;posicoes.clear();valueForDirection=posInicial;
 }
-void fcfs(){
-    cout << "========== Algoritmo FCFS! ==========" << "\n";
+
+int foundMinValue(){
+    int minValue =100;
     for(int i=0; i<10; i++){
-        lastAcess=requisicoes[i];
-        posicoes.insert(i);
-        deslocamentos += abs(posInicial-lastAcess);
-        posInicial=lastAcess;
-        print();
+        if(requisicoes[i]<minValue && posicoes.count(i)==0)minValue=requisicoes[i];
     }
-    cout << "FCFS - Quantidade total de deslocamentos: " << deslocamentos << "\n";
-    printOriginal();
-}
-void sstf(){
-    zeroAll();
-    cout << "========== Algoritmo SSTF! ==========\n";
-    for(int i=0; i<10;i++){
-        int minAbsFound =200, indexOfAbs=0;
-        for(int j=0; j<10; j++){
-            if(posicoes.count(j)==0){
-                if(abs(posInicial-requisicoes[j])<minAbsFound){
-                    minAbsFound=abs(posInicial-requisicoes[j]);
-                    indexOfAbs=j;
-                }
-            }
-        }
-        lastAcess = requisicoes[indexOfAbs]; posicoes.insert(indexOfAbs);deslocamentos+=minAbsFound;posInicial=requisicoes[indexOfAbs];
-        print();
-    }
-    cout << "SSTF - Quantidade total de deslocamentos: " << deslocamentos << "\n";
-    printOriginal();
+    return minValue;
 }
 
 void goUp(){
@@ -142,94 +112,83 @@ void goDown(){
         }
 }
 
+void fcfs(){
+    printOriginal();
+    cout << "========== Algoritmo FCFS! ==========" << "\n";
+    for(int i=0; i<10; i++){
+        lastAcess=requisicoes[i];
+        posicoes.insert(i);
+        deslocamentos += abs(posInicial-lastAcess);
+        posInicial=lastAcess;
+        print();
+    }
+    cout << "FCFS - Quantidade total de deslocamentos: " << deslocamentos << "\n";
+}
+void sstf(){
+    zeroAll();
+    printOriginal();
+    cout << "========== Algoritmo SSTF! ==========\n";
+    for(int i=0; i<10;i++){
+        int minAbsFound =200, indexOfAbs=0;
+        for(int j=0; j<10; j++){
+            if(posicoes.count(j)==0){
+                if(abs(posInicial-requisicoes[j])<minAbsFound){
+                    minAbsFound=abs(posInicial-requisicoes[j]);
+                    indexOfAbs=j;
+                }
+            }
+        }
+        lastAcess = requisicoes[indexOfAbs]; posicoes.insert(indexOfAbs);deslocamentos+=minAbsFound;posInicial=requisicoes[indexOfAbs];
+        print();
+    }
+    cout << "SSTF - Quantidade total de deslocamentos: " << deslocamentos << "\n";
+}
+
 void scan(){
     zeroAll();
-    changeDirection();
+    printOriginal();
     cout << "===== Algoritmo Scan (elevador) =====\n";
-    if(whatDirection){   //INDO PARA CIMA
-        //cout << "go up primeiro\n";
+    goDown();
+    if(posicoes.size()!=10){
+        if(lastAcess!=0){
+            deslocamentos+=abs(lastAcess-0);lastAcess=0;posInicial=0;
+            print();
+        }
+        valueForDirection=0;
         goUp();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            goDown();
-        }
-    }else{
-        //cout << "go down primeiro\n";
-        goDown();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            goUp();
-        }
     }
     cout << "SCAN - Quantidade total de deslocamentos: " << deslocamentos << "\n";
-    printOriginal();
 }
 
 void cscan(){
     zeroAll();
-    changeDirection();
+    printOriginal();
     cout << "====== Algoritmo Circular SCAN ======\n";
-    if(directionForC){   //INDO PARA CIMA
-        goUp();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            valueForDirection=0;
-            if(lastAcess!=99){
-                deslocamentos+=abs(lastAcess-99);lastAcess=99;
-                print();
-            }
-            deslocamentos+=99;posInicial=0,lastAcess=0;
+    goUp();
+    if(posicoes.size()!=10){
+        if(lastAcess!=99){
+            deslocamentos+=abs(lastAcess-99);lastAcess=99;posInicial=99;
             print();
-            goUp();
         }
-    }else{
-        goDown();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            valueForDirection=100;
-            if(lastAcess!=0){
-                deslocamentos+=abs(lastAcess-0);lastAcess=0;
-                print();
-            }
-            deslocamentos+=99;posInicial=99,lastAcess=99;
-            goDown();
-        }
+        deslocamentos+=abs(lastAcess-0);lastAcess=0;posInicial=0;
+        print();
+        valueForDirection=0;
+        goUp();
     }
     cout << "Circular Scan - Quantidade total de deslocamentos: " << deslocamentos << "\n";
-    printOriginal();
 }
 void clook(){
     zeroAll();
-    changeDirection();
+    printOriginal();
     cout << "========= Algoritmo C-look ==========\n";
-    if(directionForC){   //INDO PARA CIMA
+    goUp();
+    if(posicoes.size()!=10){
+        int b = foundMinValue();
+        deslocamentos+=abs(lastAcess-b);lastAcess=0;posInicial=b;posicoes.insert(b);
+        valueForDirection=0;
         goUp();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            posInicial=100;
-            for(int i=0; i<10; i++){
-                if(requisicoes[i]<posInicial && posicoes.count(i)==0)posInicial=requisicoes[i];
-            }
-            deslocamentos+=abs(lastAcess-posInicial);
-            valueForDirection=0;
-            goUp();
-        }
-    }else{
-        cout << "Go down primeiro?" << endl;
-        goDown();
-        size_t setSize = posicoes.size();
-        if(setSize<10){
-            posInicial=0;
-            for(int i=0; i<10; i++){
-                if(requisicoes[i]>posInicial && posicoes.count(i)==0)posInicial=requisicoes[i];
-            }
-            deslocamentos+=abs(lastAcess-posInicial);
-            valueForDirection=100;
-            goDown();
-        }
     }
     cout << "C-look - Quantidade total de deslocamentos: " << deslocamentos << "\n";
-    printOriginal();
 }
 
 

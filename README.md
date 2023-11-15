@@ -18,8 +18,8 @@ Começará a atender as requisições em direção à trilha 99, a partir de sua
 #### Recomenda-se ambiente linux para execução do projeto
   1. Clone o repositório em um diretório de sua preferência
   2. Navegue via terminal até o diretório escolhido
-  3. Compile o arquivo `initializer.cpp` utilizando no terminal a linha `g++ initializer.cpp -o nomedoarquivo` (substitua "nomedoarquivo" por um nome de sua preferência.
-  4. Execute utilizando no terminal a linha `./nomedoarquivo` (substitua "nomedoarquivo" pelo nome escolhido no passo anterior.
+  3. Compile o arquivo `initializer.cpp` utilizando no terminal a linha `g++ initializer.cpp -o nomedoarquivo` (substitua "nomedoarquivo" por um nome de sua preferência.)
+  4. Execute utilizando no terminal a linha `./nomedoarquivo` (substitua "nomedoarquivo" pelo nome escolhido no passo anterior.)
 ## Linguagem de programação e compilador 
 - **Linguagem:** C++
 - **Compilador:** G++17 (Padrão C++17)

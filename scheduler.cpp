@@ -8,10 +8,13 @@
 
 namespace edm{
     class printer{
+        // Classe responsável por guardar e imprimir as informações geradas pelo scheduler
         public:
+            // Concatena novas informações à string final
             void sumBuffer(std::string x){
                 ansPrint+=x;
             }
+            // Printa a string final "ansPrint", contendo as informações de todos os escalonamentos
             void print(){
                 std::cout << ansPrint << "\n";
             }
@@ -19,21 +22,25 @@ namespace edm{
             std::string ansPrint="";
     };
     class scheduler{
+        // Classe responsável por executar os algoritmos de escalonamento
         public:
             void initializer(){
-                geraRandom();
+                geraRandom(); // Gera 10 requisições aleatórias com valores entre 1 e 99, e uma posição inicial também aleatória
+                // Cada um dos 5 algoritmos serão executados
                 fcfs();
                 sstf();
                 scan();
                 cscan();
                 clook();
+                // Imprime tudo
                 myPrinter.print();
             }
         private:
-            printer myPrinter;
-            int requisicoes[10];
-            std::set<int> posicoes;
+            printer myPrinter; // Instância da classe printer
+            int requisicoes[10]; // Lista de requisições
+            std::set<int> posicoes; // Como não fazemos alterações no array requisicoes, o set posicoes armazena temporariamente as posicoes que já foram atendidas por cada algoritmo
             int lastAcess =0, deslocamentos=0, posInicial, valueForDirection=0, backupforInitial;
+
             void geraRandom(){
                 for(int i=0; i<11; i++){
                     std::random_device rd;
@@ -44,6 +51,7 @@ namespace edm{
                 }
                 backupforInitial=posInicial;
             }
+            // Utilizado para enviar para o buffer da classe printer o array original (antes da execução de quaisquer um dos algoritmos de escalonamento), e informar a posição inicial do cabeçote de leitura
             void printOriginal(){
                 std::ostringstream output;
                 output << "\n" << "Posição inicial da cabeça de leitura e gravação " << std::setw(2) << std::setfill('0') << posInicial << "\n";
@@ -55,6 +63,7 @@ namespace edm{
                 output << "]\n\n";
                 myPrinter.sumBuffer(output.str());
             }
+            // Utilizado durante a execução dos algoritmos, para mostrar quais posições acessou e quais ainda pode acessar. Envia essas informações ao buffer da classe printer.
             void print(){
                 std::ostringstream output;
                 int meuTamanho = 10-(int)posicoes.size();
@@ -74,11 +83,11 @@ namespace edm{
                 output << "] Já deslocou " << deslocamentos << "\n";
                 myPrinter.sumBuffer(output.str());
             }
-
+            // Usado para zerar as variáveis globais, cada vez que formos executar um próximo algoritmo
             void zeroAll(){
                 posInicial=backupforInitial,lastAcess=posInicial,deslocamentos=0;posicoes.clear();valueForDirection=posInicial;
             }
-
+            // Utilizado apenas pelo C-Look, para saber o número da trilha que deve ir, ao atingir a requisição de maior número e ainda houverem mais requisições
             int foundMinValue(){
                 int minValue =100;
                 for(int i=0; i<10; i++){
@@ -86,7 +95,7 @@ namespace edm{
                 }
                 return minValue;
             }
-
+            // Função reaproveitada por Scan, C-Scan e C-Look, para ir em direção à borda do disco (trilha 99)
             void goUp(){
                     for(int i=0; i<10; i++){
                         bool mudei = false;
@@ -105,6 +114,7 @@ namespace edm{
                         }
                     }
             }
+            // Função utilizada para ir em direção ao centro do disco (trilha 0)
             void goDown(){
                     for(int i=0; i<10; i++){
                         int minAbsFound =200, indexOfAbs=0;

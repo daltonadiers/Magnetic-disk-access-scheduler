@@ -1,4 +1,4 @@
-# Escalonador de acessos a diso magnético
+# Escalonador de acessos a disco magnético
   Projeto desenvolvido para a cadeira de Sistemas Operacionais II, do curso de Ciência da Computação da Universidade de Passo Fundo.
   Este projeto visa simular os principais algoritmos utilizados no processo de escalonamento a disco, sendo eles FCFS(First-Come, First-Served), SSTF (Shortest Seek Time First), SCAN (Elevator), CIRCULAR SCAN, e C-LOOK.
 ## Descrição 

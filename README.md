@@ -23,3 +23,6 @@ Começará a atender as requisições em direção à trilha 99, a partir de sua
 ## Linguagem de programação e compilador 
 - **Linguagem:** C++
 - **Compilador:** G++17 (Padrão C++17)
+## Autores
+- **Dalton Oberdan Adiers**@daltonadiers
+- **Bruna Baldissera**@brunabaldissera

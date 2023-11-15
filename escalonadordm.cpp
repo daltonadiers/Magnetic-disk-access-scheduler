@@ -1,3 +1,5 @@
+// DALTON OBERDAN ADIERS - 193851
+// BRUNA BALDISSERA - 195244
 #include <iostream>
 #include <set>
 #include <vector>
@@ -37,8 +39,8 @@ void geraRandom(){
     backupforInitial=posInicial;
 }
 void printOriginal(){
-    cout << "\n" << "Posição inicial da cabeça de leitura e gravação " << posInicial << "\n";
-    cout << "Original [" << requisicoes[0] << " - ";
+    cout << "\n" << "Posição inicial da cabeça de leitura e gravação " << setw(2) << setfill('0') << posInicial << "\n";
+    cout << "Original [" << setw(2) << setfill('0') << requisicoes[0] << " - ";
     for(int i=1; i<10; i++){
         cout << requisicoes[i];
         if(i!=9)cout << " - ";
@@ -52,7 +54,7 @@ void print(){
     for(int i=0; i<10;i++){
         if(posicoes.count(i)==0){
             counter++;
-            cout << requisicoes[i];
+            cout << setw(2) << setfill('0') << requisicoes[i];
             if(counter==meuTamanho){
                 continue;
             }else{

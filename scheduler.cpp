@@ -215,7 +215,7 @@ namespace edm{
                 goUp();
                 if(posicoes.size()!=10){
                     int b = foundMinValue();
-                    deslocamentos+=abs(lastAcess-b);lastAcess=0;posInicial=b;posicoes.insert(b);
+                    deslocamentos+=abs(lastAcess-b);lastAcess=0;posInicial=b;//posicoes.insert(b);
                     valueForDirection=0;
                     goUp();
                 }
